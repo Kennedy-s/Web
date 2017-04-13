@@ -1,10 +1,10 @@
 module Main exposing (..)
 
-import Html.Attributes exposing (id, type_, value, class)
+import Html.Attributes exposing (id, class, value, type_)
 import Html.Events exposing (..)
-import Html exposing (h1, text, textarea, button, input, label)
+import Html exposing (..)
 import Http 
-
+import Json.Decode as Json
 
 main =
   Html.program
@@ -26,6 +26,7 @@ type alias Model =
   , reply : String
   , filter : String
   , send  : String
+  , users : List User
   }
 
 model : Model
@@ -38,6 +39,7 @@ model =
   , reply = ""
   , filter = ""
   , send = ""
+  , users = [ user1, user2, user3 ]
   }
 
 init : ( Model, Cmd Msg)
@@ -60,11 +62,10 @@ type Msg
 
 
 type alias User =
-   { usrename : String 
+   { username : String 
    , password : String
    }
 
-users : [ user1, user2, user3]
 
 
 user1 : User
@@ -79,96 +80,107 @@ user2 =
   , password = "5678"
   }
 
-user3 : Username
+user3 : User
 user3 =
   { username = "user3"
   , password = "2468"
-  }
-
-
-user : Model -> Html Msg
-user model =
-      
+  }   
 
 
 update : Msg -> Model -> (Model, Cmd msg)
 update msg model  =
   case msg of
-    Username ->
-      (model, Cmd.none)
+    Username username ->
+      ({ model | username = username }, Cmd.none)
 
-    Password ->
-      (model, Cmd.none)
+    Password password ->
+      ({ model | password = password }, Cmd.none)
     
     Login ->
-      (model, Cmd.none)
+      let 
+        -- validation
+
+        validationMessage = 
+          List.filter validate model.users
+            |> List.head
+            |> justUser
+
+        justUser maybeUser = 
+          case maybeUser of 
+            Just user ->
+              "Ok"
+            Nothing ->
+              "Invalid username and/or password"
+
+        validate user = 
+          (user.username == model.username && user.password == model.password)
+
+      in
+        ({ model | message = validationMessage }, Cmd.none)
 
     Logout ->
       (model, Cmd.none)
 
-    Message ->
-      (model, Cmd.none)
+    Message message ->
+      ({ model | message = message }, Cmd.none)
 
-    Reply -> 
-      (model, Cmd.none)
+    Reply reply -> 
+      ({ model | reply = reply }, Cmd.none)
 
-    Filter ->
-      (model, Cmd.none)
+    Filter filter ->
+      ({ model | filter = filter }, Cmd.none)
 
-    Send ->
-      (model, Cmd.nones)
+    Send send ->
+      ({ model | send = send }, Cmd.none)
     
 
-
-loginPage : Model -> Html Msg
-loginPage model =
-   let    
-       if (color, message) = 
-          (model.username == "user1" && model.password == "123")
-          ("green", "OK")
-
-         else 
-          ("red", "Invalid login details.")
-       
-      ({ model | message = message}, Cmd.none)
-   in
-
-
+  
 messagePage : Model -> Html Msg
 messagePage model =
     div [ id "message" ]
-        [ h1 ] [] [ text "Message" ]
-                  [ textarea [ text "type your message/comment" ]
-                  , button  [ onClick ( Filter "filter"), value "Filter" ] [ text "filter"]
-                  , button  [ onClick ( Reply "delivered"), value "Reply" ] [ text "reply"]
-                  , button  [ onClick ( Send "sent"), value "Send" ] [ text "send"]
-                  ]
-                  []       
+        [ h1 [] [ text "Message" ]
+        , text model.message
+        , textarea [] [ text "type your message/comment" ]
+        , button  [ onClick ( Filter "filter"), value "Filter" ] [ text "filter"]
+        , button  [ onClick ( Reply "delivered"), value "Reply" ] [ text "reply"]
+        , button  [ onClick ( Send "sent"), value "Send" ] [ text "send"]
+        ]
            
 -- View
 
-view : Model -> Html Msg
-view model =
-  form [ id "login-form" ] 
+loginPage : Model -> Html Msg
+loginPage model = 
+  div  [ id "login-form" ] 
        [ h1 [] [ text "Login Form" ]
+       , div [] [text model.message]
        , label []
                [ text "username" ]
        , input [ id "username-filed"
                , type_ "text"
                , value model.username 
+               , on "input" (Json.map (\str -> Username str) targetValue)
                ] 
                []
        , label [] 
                [ text "password: " ]
        , input [ id "password-field"
                , type_ "password"
-               , value model.password              
+               , value model.password    
+               , on "input" (Json.map (\str -> Password str) targetValue)          
                ]
                []
        , button [ onClick Login ] [ text "Login" ]
        , button [ onClick Logout ] [ text "Logout" ]
        ]
 
+
+view : Model -> Html Msg
+view model =
+  case model.message == "Ok" of
+    True ->
+      messagePage model
+    False ->
+      loginPage model
 
 
 
