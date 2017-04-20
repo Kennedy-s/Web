@@ -110,7 +110,7 @@ update msg model  =
             Just user ->
               "Ok"
             Nothing ->
-              "Invalid username and/or password"
+              "Invalid username/ password"
 
         validate user = 
           (user.username == model.username && user.password == model.password)
@@ -140,7 +140,7 @@ messagePage model =
     div [ id "message" ]
         [ h1 [] [ text "Message" ]
         , text model.message
-        , textarea [] [ text "type your message/comment" ]
+        , textarea [] [ text "type your message" ]
         , button  [ onClick ( Filter "filter"), value "Filter" ] [ text "filter"]
         , button  [ onClick ( Reply "delivered"), value "Reply" ] [ text "reply"]
         , button  [ onClick ( Send "sent"), value "Send" ] [ text "send"]
@@ -172,7 +172,6 @@ loginPage model =
        , button [ onClick Login ] [ text "Login" ]
        , button [ onClick Logout ] [ text "Logout" ]
        ]
-
 
 view : Model -> Html Msg
 view model =
