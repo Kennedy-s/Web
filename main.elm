@@ -39,7 +39,7 @@ model =
   , reply = ""
   , filter = ""
   , send = ""
-  , users = [ user1, user2, user3 ]
+  , users = [ user1, user2, user3, user4 ]
   }
 
 init : ( Model, Cmd Msg)
@@ -86,6 +86,12 @@ user3 =
   , password = "2468"
   }   
 
+user4 : User
+user4 = 
+  { username = "user4"
+  , password = "7890"
+  }
+
 
 update : Msg -> Model -> (Model, Cmd msg)
 update msg model  =
@@ -110,7 +116,7 @@ update msg model  =
             Just user ->
               "Ok"
             Nothing ->
-              "Invalid username/ password"
+              "Invalid username/password"
 
         validate user = 
           (user.username == model.username && user.password == model.password)
