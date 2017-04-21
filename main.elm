@@ -110,7 +110,7 @@ update msg model  =
             Just user ->
               "Ok"
             Nothing ->
-              "Invalid username/ password"
+              "Invalid username/password"
 
         validate user = 
           (user.username == model.username && user.password == model.password)
