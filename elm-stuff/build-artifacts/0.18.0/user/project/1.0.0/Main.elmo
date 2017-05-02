@@ -79,6 +79,7 @@ var _user$project$Main$update = F2(
 				};
 		}
 	});
+var _user$project$Main$kennedy = {username: 'kennedy', password: '1991'};
 var _user$project$Main$user4 = {username: 'user4', password: '7890'};
 var _user$project$Main$user3 = {username: 'user3', password: '2468'};
 var _user$project$Main$user2 = {username: 'user2', password: '5678'};
@@ -104,7 +105,11 @@ var _user$project$Main$model = {
 				_1: {
 					ctor: '::',
 					_0: _user$project$Main$user4,
-					_1: {ctor: '[]'}
+					_1: {
+						ctor: '::',
+						_0: _user$project$Main$kennedy,
+						_1: {ctor: '[]'}
+					}
 				}
 			}
 		}
