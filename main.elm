@@ -39,7 +39,7 @@ model =
   , reply = ""
   , filter = ""
   , send = ""
-  , users = [ user1, user2, user3, user4, kennedy ]
+  , users = [ user1, user2, user3, user4, kennedy, MKS ]
   }
 
 init : ( Model, Cmd Msg)
@@ -98,6 +98,11 @@ kennedy =
   , password = "1991"
   }
 
+MKS : User
+MKS =
+ { username = "MKS"
+ , password = "2010"
+ }
 
 update : Msg -> Model -> (Model, Cmd msg)
 update msg model  =
